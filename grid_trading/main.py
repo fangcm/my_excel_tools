@@ -1,9 +1,14 @@
 import xlwings as xw
 
+from grid_trading.action import Action
+
 
 def main():
     wb = xw.Book.caller()
     wb.sheets[0].range("A1").value = "Hello xlwings!"
+
+    action = Action()
+    action.calculate()
 
 
 if __name__ == "__main__":

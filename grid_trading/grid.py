@@ -1,25 +1,21 @@
-import configparser
-
-from grid_trading.model import BasicGridModel
-
-
-class Grid(object):
+class BasicGrid(object):
     def __init__(self):
-        self.config = configparser.RawConfigParser()
-        self.grid_model = BasicGridModel()
+        self.base_price = 0
+        self.volume_per_trading = 100
+        self.increase_rate = 0.01
+        self.decrease_rate = 0.01
+        self.min_volume = 0
+        self.max_volume = 0
+        self.price_ceiling = 0
+        self.price_floor = 0
 
-    def load_config(self):
-        self.config.read('main.ini')
-
+    def load_config(self, config):
         mode = 'basic_grid'
-        self.grid_model.base_price = self.config.get(mode, 'base_price')
-        self.grid_model.volume_per_trading = self.config.get(mode, 'volume_per_trading')
-        self.grid_model.increase_rate = self.config.get(mode, 'increase_rate')
-        self.grid_model.decrease_rate = self.config.get(mode, 'decrease_rate')
-        self.grid_model.min_volume = self.config.get(mode, 'min_volume')
-        self.grid_model.max_volume = self.config.get(mode, 'max_volume')
-        self.grid_model.price_ceiling = self.config.get(mode, 'price_ceiling')
-        self.grid_model.price_floor = self.config.get(mode, 'price_floor')
-
-    def calculate(self):
-        self.load_config()
+        self.base_price = config.get(mode, 'base_price')
+        self.volume_per_trading = config.get(mode, 'volume_per_trading')
+        self.increase_rate = config.get(mode, 'increase_rate')
+        self.decrease_rate = config.get(mode, 'decrease_rate')
+        self.min_volume = config.get(mode, 'min_volume')
+        self.max_volume = config.get(mode, 'max_volume')
+        self.price_ceiling = config.get(mode, 'price_ceiling')
+        self.price_floor = config.get(mode, 'price_floor')

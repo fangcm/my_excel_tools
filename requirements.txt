@@ -1,3 +1,4 @@
 comtypes==1.1.7
+configparser==5.0.0
 pywin32==227
 xlwings==0.18.0
