@@ -7,25 +7,38 @@ from grid_trading.grid import BasicGrid
 class Action(object):
     grid = None
 
-    def __init__(self):
+    def __init__(self, wb_sheet):
+        self.wb_sheet = wb_sheet
         self.config = configparser.RawConfigParser()
 
-    def load_config(self, filepath):
+    def _load_config(self, filepath):
         if filepath:
             config_path = filepath
         else:
             root_dir = os.path.dirname(os.path.abspath('.'))
             config_path = os.path.join(root_dir, "grid_trading.ini")
-        self.config.read(config_path)
+        self.config.read(config_path, encoding="utf-8-sig")
 
-        if self.grid:
-            self.grid.load_config(self.config)
+    def log(self, msg):
+        self.wb_sheet.range("A1").value = msg
 
-    def set_grid_model(self):
-        self.grid = BasicGrid()
-        self.grid.load_config(self.config)
+    def calculate(self):
+        # load config
+        self._load_config(None)
 
-    def calculate(self, grid_model=None):
-        if grid_model:
+        # load grid model
+        section = self.config.get('DEFAULT', 'section')
+        if not self.config.has_section(section):
+            self.log('没有找到配置文件section项: [{}]'.format(section))
+            return
+        grid_model = self.config.get(section, 'grid_model')
+        if grid_model == BasicGrid.grid_model:
             self.grid = BasicGrid()
-        self.load_config(None)
+
+        if not self.grid:
+            self.log('没有找到网格模型: {}'.format(grid_model))
+            return
+
+        # calculate
+        self.grid.load_config(self.config[section])
+        self.grid.calculate(self.wb_sheet)
